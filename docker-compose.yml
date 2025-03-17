@@ -1,7 +1,5 @@
-version: "3.8"
-
 services:
-  GitServer:
+  git-server:
     build:
       context: ./git
       dockerfile: Dockerfile
@@ -11,7 +9,7 @@ services:
     networks:
       - shared-network
 
-  CodeEditor:
+  code-editor:
     build:
       context: ./editor
       dockerfile: Dockerfile

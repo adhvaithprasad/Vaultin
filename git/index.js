@@ -1,16 +1,18 @@
 const path = require("path");
+const git = require("isomorphic-git");
 const cors = require("cors");
 const fs = require("fs");
 const express = require("express");
 const http = require("http");
 const { exec } = require("child_process");
 const { Git: Server } = require("node-git-server");
-
 const app = express();
 const server = http.createServer(app);
 
+
+
 const corsOptions = {
-  origin: "http://localhost:8000/",
+  origin: "*",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   optionsSuccessStatus: 204,
 };
@@ -40,7 +42,6 @@ async function cloneRepo(dir, url) {
     });
   });
 }
-
 // API route to clone a repo
 app.post("/clone", async (req, res) => {
   const { url, dir } = req.body;
@@ -55,13 +56,20 @@ app.post("/clone", async (req, res) => {
   }
 });
 
+
+
+
 // List files in a repository
+async function list(rdir) {
+  const dir = path.join(process.cwd(), "assets", rdir);
+  const files = await git.listFiles({ fs, dir });
+  return files;
+}
 app.get("/files/:repo", async (req, res) => {
   const repo = req.params.repo;
   try {
-    const dir = path.join(process.cwd(), "assets", repo);
-    const files = fs.readdirSync(dir);
-    res.send({ files });
+    const r = await list(repo);
+    res.send({ files: r });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -81,29 +89,39 @@ app.get("/list-repos", async (req, res) => {
 });
 
 // Get repository branches
+async function branchlist(rdir) {
+  const dir = path.join(process.cwd(), "assets", rdir);
+  const branches = await git.listBranches({ fs, dir });
+  return branches;
+}
 app.get("/branch/:repo", async (req, res) => {
   const repo = req.params.repo;
-  const repoPath = path.join(process.cwd(), "assets", repo);
-  exec(`git -C ${repoPath} branch`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error fetching branches: ${stderr}`);
-      return res.status(500).json({ error: "Error fetching branches" });
-    }
-    res.json({ branches: stdout.trim().split("\n").map((b) => b.trim()) });
-  });
+  try {
+    const r = await branchlist(repo);
+    res.send({ branches: r });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 // Get commit history
+async function commitlist(rdir) {
+  const dir = path.join(process.cwd(), "assets", rdir);
+  const commits = await git.log({ fs, dir, ref: "HEAD" });
+  return commits;
+}
 app.get("/commits/:repo", async (req, res) => {
+  
   const repo = req.params.repo;
-  const repoPath = path.join(process.cwd(), "assets", repo);
-  exec(`git -C ${repoPath} log --oneline`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error fetching commits: ${stderr}`);
-      return res.status(500).json({ error: "Error fetching commits" });
-    }
-    res.json({ commits: stdout.trim().split("\n") });
-  });
+  console.log(repo);
+  try {
+    const r = await commitlist(repo);
+    res.send({ commits: r });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 // Add a file to the repository
@@ -126,24 +144,35 @@ app.post("/add", async (req, res) => {
 });
 
 // Commit changes
+async function commit(message, name, email, rdir) {
+  const dir = path.join(process.cwd(), "assets", rdir);
+  console.log(message, name, email, dir);
+  let sha = await git.commit({
+    fs,
+    dir: dir,
+    author: {
+      name: name,
+      email: email,
+    },
+    message: message,
+  });
+  return sha;
+}
 app.post("/commit", async (req, res) => {
-  const { message, name, email, dir } = req.body;
-  if (!message || !name || !email || !dir) {
-    return res.status(400).json({ error: "Missing parameters" });
+  
+  const message = req.body.message;
+  const name = req.body.name;
+  const email = req.body.email;
+  const dir = req.body.dir;
+  try {
+    const r = await commit(message, name, email, dir);
+    res.send({ sha: r });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
-
-  const repoPath = path.join(process.cwd(), "assets", dir);
-  exec(
-    `git -C ${repoPath} commit -m "${message}" --author="${name} <${email}>"`,
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error committing: ${stderr}`);
-        return res.status(500).json({ error: "Error committing" });
-      }
-      res.json({ message: `Committed changes: ${message}`, output: stdout });
-    }
-  );
 });
+
 
 // Get file content from a repository
 app.get("/content/:branch/:dir/:file", async (req, res) => {
@@ -160,6 +189,7 @@ app.get("/content/:branch/:dir/:file", async (req, res) => {
   });
 });
 
+app.use("/", express.static("static"));
 // Git server endpoint
 app.use("/git", function (req, res) {
   repos.handle(req, res);
