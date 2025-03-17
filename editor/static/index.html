@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Vaultin</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+      <!-- Material Icons font -->
+  <link rel=stylesheet href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <!-- Firebase scripts -->
+  <script src=https://www.gstatic.com/firebasejs/8.8.1/firebase-app.js></script>
+  <script src=https://www.gstatic.com/firebasejs/8.8.1/firebase-auth.js></script>
+  <script src=https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js></script>
+  <!-- Monaco editor loader -->
+  <script src=https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.27.0/min/vs/loader.min.js
+   
+    crossorigin=anonymous referrerpolicy=no-referrer></script>
+
+
+  <!-- Custom stylesheets -->
+  <link rel=stylesheet href=http://localhost:3000/cdn/editor/style/style.css>
+  <link rel=stylesheet href=http://localhost:3000/cdn/editor/style/editor-tokens.css>
+</head>
+
+<body>
+
+
+
+
+
+
+  <!-- Main editor section -->
+  <div class=main--editor>
+    <div id="terminal-options" class="terminal-options">
+      <button onclick="clearTerminal()"><svg data-testid="geist-icon" height="16" stroke-linejoin="round" viewBox="0 0 16 16" width="16" style="color: currentcolor;"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 0.75V0H1.5V0.75V15.25V16H0V15.25V0.75ZM8.46967 3.21967L9 2.68934L10.0607 3.75L9.53033 4.28033L6.56066 7.25H15.25H16V8.75H15.25H6.56066L9.53033 11.7197L10.0607 12.25L9 13.3107L8.46967 12.7803L4.21967 8.53033C3.92678 8.23744 3.92678 7.76256 4.21967 7.46967L8.46967 3.21967Z" fill="currentColor"></path></svg></button>
+      <button onclick="terminal_close()"><svg data-testid="geist-icon" height="16" stroke-linejoin="round" viewBox="0 0 16 16" width="16" style="color: currentcolor;"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.5 8C14.5 11.5899 11.5899 14.5 8 14.5C4.41015 14.5 1.5 11.5899 1.5 8C1.5 4.41015 4.41015 1.5 8 1.5C11.5899 1.5 14.5 4.41015 14.5 8ZM16 8C16 12.4183 12.4183 16 8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8ZM5.5 11.5607L6.03033 11.0303L8 9.06066L9.96967 11.0303L10.5 11.5607L11.5607 10.5L11.0303 9.96967L9.06066 8L11.0303 6.03033L11.5607 5.5L10.5 4.43934L9.96967 4.96967L8 6.93934L6.03033 4.96967L5.5 4.43934L4.43934 5.5L4.96967 6.03033L6.93934 8L4.96967 9.96967L4.43934 10.5L5.5 11.5607Z" fill="currentColor"></path></svg></button>
+    </div>
+    <div id="terminal" class="terminal"></div>
+    <main id=user_div class=loggedin-div>
+      <div id="create-file">
+        <div class="create-header">
+          <h3>New file</h3>
+        </div>
+        <div class="create-main">
+          <input type="text" id="new-file-name">
+        </div>
+        <div class="create-footer">
+          <button class="create-file-cancel">cancel</button>
+          <button class="create-file-new">Create</button>
+        </div>
+      </div>
+      <div id="create-folder">
+        <div class="create-header">New Folder</div>
+        <div class="create-main">
+          <input type="text" id="new-folder-name">
+        </div>
+        <div class="create-footer">
+          <button class="create-file-cancel">cancel</button>
+          <button class="create-file-new">Create</button>
+        </div>
+      </div>
+      <div class=many>
+
+        <div class="nav" style="display:none">
+          <div class="icons">
+            <img src="https://dartpad.dev/dart-192.png">
+            <i onclick=filetab() class="material-icons mdc-button__icon filetab" aria-hidden=true type="button">
+              source</i>
+            <!-- <i onclick=reviewtab() class="material-icons mdc-button__icon reviewtab" aria-hidden=true type="button"> rate_review</i> -->
+            <i onclick=gittab() class="material-icons mdc-button__icon gittab" aria-hidden=true type="button">
+              commit</i>
+          </div>
+          <!-- <i  class="material-icons mdc-button__icon apitab" aria-hidden=true type="button"> sync_alt</i> -->
+         
+        </div>
+        <!-- Output and file container -->
+        <div id=output class=filecontainer>
+          <div class="output-header">
+            <div class="output-file-header" id="output-file-header" style="display:flex;align-items:center;width: 100%;justify-content: space-between;">
+
+              <div style="display:flex;width: 100%;justify-content: space-between;align-items: center;">
+                <img height="20" id="user-image-editor"/>
+                <h3>Vaultin</h3>
+               <div style="display:flex;">
+                 <button fdprocessedid="onja1k"><svg class="with-icon_icon__MHUeb" data-testid="geist-icon" fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24" style="color:var(--geist-foreground);width:20px;height:20px"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"></path><path d="M12 11v6"></path><path d="M9 14h6"></path></svg></button>
+
+                 <button fdprocessedid="i6ypz9"><svg class="with-icon_icon__MHUeb" data-testid="geist-icon" fill="none" height="10" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="10" style="color:var(--geist-foreground);width:20px;height:20px"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path><path d="M14 2v6h6"></path><path d="M12 18v-6"></path><path d="M9 15h6"></path></svg></button>
+
+                 <button onclick="gittab()" fdprocessedid="ovqizk"><svg class="with-icon_icon__MHUeb" data-testid="geist-icon" fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24" style="color:var(--geist-foreground);width:20px;height:20px"><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="19" cy="12" r="1" fill="currentColor"/><circle cx="5" cy="12" r="1" fill="currentColor"/></svg></button>
+               </div>
+
+
+
+              </div>
+
+            </div>
+            <div class="output-git-header" id="output-git-header" style="display:flex;justify-content:space-between">
+               <button onclick=filetab()><svg class="with-icon_icon__MHUeb" data-testid="geist-icon" fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24" style="color:var(--geist-foreground);width:20px;height:20px"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></button>
+         
+              <div style="display:flex;justify-content:flex-start">
+              <button><svg class="with-icon_icon__MHUeb" data-testid="geist-icon" fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24" style="color:var(--geist-foreground);width:20px;height:20px"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 009 9"/></svg></button>
+              <button><svg class="with-icon_icon__MHUeb" data-testid="geist-icon" fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24" style="color:var(--geist-foreground);width:20px;height:20px"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 012 2v7"/><path d="M6 9v12"/></svg></button></div>
+            </div>
+          </div>
+          <ul id=root>
+
+          </ul>
+          <ul id=git_cont>
+            <textarea id="commit_message"></textarea>
+            <button class="add_channel" onclick=commit()><svg class="with-icon_icon__MHUeb" data-testid="geist-icon" fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24" style="color:var(--geist-foreground);width:20px;height:20px"><circle cx="12" cy="12" r="4"/><path d="M1.05 12H7"/><path d="M17.01 12h5.95"/></svg> add commit</button>
+            <div id="git_files_cont"></div>
+          </ul>
+
+        </div>
+
+        <div id="no-repo-chosen">
+          
+        </div>
+        <div class="editor-container" id="editor-main-container">
+
+          <div id="editor-header"></div>
+          <div style="display:none" id=firepad-diff-container></div>
+          <div style="display:flex" id=firepad-container></div>
+          <div id="editor-footer">
+            <!-- <img alt="" id=user-image-editor onclick=logout()> -->
+            <div>
+              <select id="branches"></select>
+              <button onclick=gotoline() id="positionButton"></button>
+                
+            </div>
+           <div>
+           <button onclick="format()" > 
+            <svg data-testid="geist-icon" height="16" stroke-linejoin="round" viewBox="0 0 16 16" width="16" style="color: currentcolor;"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.75 2H1V3.5H1.75H14.25H15V2H14.25H1.75ZM1 7H1.75H9.25H10V8.5H9.25H1.75H1V7ZM1 12H1.75H11.25H12V13.5H11.25H1.75H1V12Z" fill="currentColor"></path></svg>
+           </button>
+            <button  onclick="terminal_open()">
+              <svg data-testid="geist-icon" height="16" stroke-linejoin="round"  viewBox="0 0 16 16" width="16" style="color: currentcolor;"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.53035 12.7804L1.00002 13.3108L-0.0606384 12.2501L0.469692 11.7198L4.18936 8.00011L0.469692 4.28044L-0.0606384 3.75011L1.00002 2.68945L1.53035 3.21978L5.60358 7.29301C5.9941 7.68353 5.9941 8.3167 5.60357 8.70722L1.53035 12.7804ZM8.75002 12.5001H8.00002V14.0001H8.75002H15.25H16V12.5001H15.25H8.75002Z" fill="currentColor"></path></svg>
+            </button>
+           </div>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+  <!-- JavaScript scripts -->
+
+  <script src=http://localhost:3000/cdn/editor/scripts/auth.js></script>
+  <script src=http://localhost:3000/cdn/editor/scripts/main.js></script>
+  <script src=http://localhost:3000/cdn/editor/scripts/terminal.js></script>
+  
+</body>
+
+</html>

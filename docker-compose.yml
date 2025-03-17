@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  GitServer:
+    build:
+      context: ./git
+      dockerfile: Dockerfile
+    container_name: git-server-container
+    ports:
+      - "8000:8000" # Change the port accordingly
+    networks:
+      - shared-network
+
+  CodeEditor:
+    build:
+      context: ./editor
+      dockerfile: Dockerfile
+    container_name: code-editor-container
+    ports:
+      - "3000:3000" # Change the port accordingly
+    networks:
+      - shared-network
+
+networks:
+  shared-network:
+    driver: bridge
