@@ -1,0 +1,207 @@
+{
+	"info": {
+		"_postman_id": "5a93e6f6-fa71-4751-bca1-6d86e6b1ba7d",
+		"name": "Vaultin git api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43172322"
+	},
+	"item": [
+		{
+			"name": "Clone Repository",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"url\": \"{{git-repo-url}}\",\n  \"dir\": \"{{git-repo-directory}}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/clone",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"clone"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Repositories",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/list-repos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"list-repos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Files in Repo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/files/{{git-repo-directory}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"files",
+						"{{git-repo-directory}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Branches",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/branch/{{git-repo-directory}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"branch",
+						"{{git-repo-directory}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Commits",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/commits/{{git-repo-directory}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"commits",
+						"{{git-repo-directory}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add File",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"file\": \"test.txt\",\n  \"dir\": \"{{git-repo-directory}}\",\n  \"content\": \"Hello Git!\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/add",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Commit Changes",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"message\": \"Initial commit\",\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"dir\": \"{{git-repo-directory}}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/commit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"commit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get File Content",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/content/main/{{git-repo-directory}}/dGVzdC50eHQ=",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"content",
+						"main",
+						"{{git-repo-directory}}",
+						"dGVzdC50eHQ="
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "git-repo-url",
+			"value": "https://github.com/githubtraining/hellogitworld.git",
+			"type": "default"
+		},
+		{
+			"key": "git-repo-directory",
+			"value": "hellogitworld",
+			"type": "default"
+		}
+	]
+}
