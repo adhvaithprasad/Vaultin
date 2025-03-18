@@ -39,12 +39,14 @@ firebase.auth().onAuthStateChanged(function(user) {
         }
     } else {
         
-        if (afterEditorIndex !== -1) {
-            const afterEditor = url.substring(afterEditorIndex);
-            window.location.href = "http://localhost:8000/signup/"+afterEditor;
-        } else {
-            console.log("No '/editor/' found in the URL.");
-        }
+      firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
+      .then((result) => {
+          console.log("User signed in:", result.user);
+      })
+      .catch((error) => {
+          console.error("Sign-in error:", error);
+      });
+      
     }
 });
 

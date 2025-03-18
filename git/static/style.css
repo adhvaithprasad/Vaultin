@@ -1,0 +1,350 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Borel&family=DM+Sans:opsz,wght@9..40,500&family=Gochi+Hand&family=Dm sans&family=Josefin+Sans&family=Poppins&display=swap');
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b101c;
+  color: white;
+  font-family: 'DM sans', sans-serif;
+  display: flex;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 5px;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+    background: #51596ea7;
+}
+::-webkit-scrollbar-thumb {
+    background: #00000000;
+}
+::-webkit-scrollbar-track {
+    background: #00000000;
+}
+.sidebar {
+  width: 260px;
+  background: #0b101c;
+  padding: 20px;
+  height: calc(100vh - 40px);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgb(204, 204, 204);
+}
+.sidebar h1 {
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 20px;
+}
+.sidebar #root {
+  height: 90%;
+  width: 100%;
+  margin: 0;
+  overflow: auto;
+  margin-top: 8px;
+  padding: 0px;
+}
+.sidebar ul {
+  list-style-type: none;
+  padding-left: 15px;
+}
+span.folder-name {
+  padding: 4px;
+  margin: 3px;
+  color: rgb(204, 204, 204);
+    font-weight: 600;
+    font-size: 13px;
+    font-family: 'Dm sans', sans-serif;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+span.folder-name:hover {
+  background: #9e9e9e45;
+  border-radius: 4px;
+}
+span.file svg {
+  margin-right: 8px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+}
+span.folder-name svg {
+  margin-right: 8px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+}
+p svg {
+  margin-bottom: 8px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  color: #d35959;
+}
+#root ul {
+  padding: 4px;
+  border-left: 2px solid #80808040;
+  margin-left: 30px;
+}
+span.file {
+  display: flex;
+  margin: 3px;
+  color: rgb(204, 204, 204);
+    font-weight: 600;
+    font-size: 13px;
+    font-family: 'Dm sans', sans-serif;
+  padding: 4px;
+  align-items: center;
+  cursor: pointer;
+}
+span.file:hover {
+  background: #9e9e9e26;
+  border-radius: 4px;
+}
+.collapsed .folder {
+  display: none;
+}
+.sidebar a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+.sidebar a:hover {
+  background: #0f3460;
+}
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+.stats {
+
+  gap: 20px;
+}
+
+.graph {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.heatmap rect {
+  shape-rendering: crispEdges;
+  stroke: #ffffff00;
+  rx: 4px;
+  ry: 4px;
+}
+#calendar text {
+  font-size: 12px;
+  fill: white;
+}
+.day {
+  stroke: #ddd;
+}
+.month {
+  fill: none;
+  stroke: #aaa;
+  stroke-width: 2px;
+}
+#calendar svg{
+  width: 100%;
+}
+.import {
+  display: flex;
+  width: 80%;
+  height: 10vh;
+  padding: 0% 10%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.import-icon {
+  padding: 10px;
+  background: #ffcaca;
+  color: #521616;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+}
+.import-button {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.import-button button {
+  cursor: pointer;
+  border: 1px solid grey;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+  padding: 8px 11px;
+  background: none;
+  border-radius: 4px;
+  color: #e2dddd;
+}
+.import-button button:hover {
+  background: #a3a3a430;
+}
+.import-text {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+}
+.import-text h5 {
+  font-family: 'DM Sans', sans-serif;
+  margin: 0px;
+  margin-bottom: 8px;
+}
+.import-text p{
+  font-family: 'DM Sans', sans-serif;
+  margin:0px;
+}
+.import-window-bg {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: #000000d6;
+  align-items: center;
+  justify-content: center;
+}
+.import-window {
+  background: #181f30;
+  padding: 10px;
+  width: 50%;
+  height: 70%;
+  border-radius: 5px;
+}
+.import-window-header {
+  display: flex
+;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.import-window-bg input {
+  border: 2px solid gray;
+  outline: none;
+  border-radius: 4px;
+  background: none;
+  color: white;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.2s ease-in-out;
+}
+.import-window-content button:hover {
+  background: #80808047;
+}
+.import-window-header {
+  display: flex
+;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+  align-items: center;
+}
+.import-window-header input {
+  padding: 8px 10px;
+ margin: 0px 20px;
+  flex: 1;
+}
+.import-window-bg input:focus {
+  border-color: #45aeff;
+}
+.import-window-content {
+  padding: 10px;
+  display: flex
+;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.import-window-content input {
+  padding: 8px 10px;
+  width: 91%;
+}
+.github-search input {
+  padding: 8px 10px;
+  width: 92%;
+  margin: 10px;
+}
+.import-window-content button {
+  outline: none;
+  padding: 6px;
+  border: none;
+  border-radius: 4px;
+  font-size: 3px;
+  background: none;
+  font-family: 'DM Sans';
+  color: #ebe8e8;
+  cursor: pointer;
+}
+button.close-import-window:hover {
+  background: #b7b7b738;
+}
+
+button.close-import-window {
+  outline: none;
+  padding: 10px;
+  background: none;
+  cursor: pointer;
+  border: none;
+  color: white;
+  border-radius: 50%;
+  display: flex
+;
+  align-items: center;
+  justify-content: center;
+}
+.import-source label {
+  font-size: 14px;
+  font-weight: 600;
+}
+form.import-source {
+  margin: 10px;
+  display: flex
+;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+}
+div#github-search {
+  height: calc(100% - 75px);
+}
+div#search-content {
+  padding: 20px;
+  width: calc(100% - 40px);
+  height: calc(100% - 90px);
+}
+#search-content  {
+    list-style-type: none;
+    padding-left: 15px;
+    overflow: scroll;
+    height: 68%;
+}
+button#search-btn:hover {
+  background: #80808047;
+}
+button#search-btn {
+  outline: none;
+  padding: 6px;
+  border: none;
+  border-radius: 4px;
+  font-size: 3px;
+  background: none;
+  font-family: 'DM Sans';
+  color: #ebe8e8;
+  cursor: pointer;
+}
+.search-bar {
+  display: flex
+;
+  align-items: center;
+  justify-content: space-between;
+}

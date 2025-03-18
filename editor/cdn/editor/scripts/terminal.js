@@ -1,9 +1,8 @@
 const terminal = new Terminal();
 const fitAddon = new FitAddon.FitAddon();
 terminal.loadAddon(fitAddon);
-
-const repoName22 = "vaultin"; // Change this dynamically if needed
-const socket = new WebSocket(`ws://localhost:3000/?repo=${repoName22}`);
+ // Change this dynamically if needed
+const socket = new WebSocket(`ws://localhost:3000/?repo=${repoName}`);
 
 terminal.open(document.getElementById("terminal"));
 fitAddon.fit();
