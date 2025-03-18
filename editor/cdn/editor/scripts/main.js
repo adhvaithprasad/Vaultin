@@ -4,6 +4,7 @@ let fileName, files = [];
 let current_file = null;
 let m1, m2, m3, m4;
 const repoName = window.location.href.split("/")[4];
+console.log("here:",repoName);
 function updatePosition() {
 
   const position = window.editor.getPosition();

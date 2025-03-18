@@ -1,47 +1,140 @@
-const path = require("path");
+const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
-const express = require("express");
+const path = require("path");
+const { execSync } = require("child_process");
 const http = require("http");
 const WebSocket = require("ws");
 const pty = require("node-pty");
+const axios = require("axios");
+
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-const corsOptions = {
-  origin: "*",
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  optionsSuccessStatus: 204, 
-};
+const BASE_DIR = path.resolve("/app/code"); // 🔥 Always start inside `/code`
 
-app.use(cors(corsOptions));
-app.use(express.json());
+if (!fs.existsSync(BASE_DIR)) {
+  fs.mkdirSync(BASE_DIR, { recursive: true });
+  console.log(`📂 Created base directory: ${BASE_DIR}`);
+}
 
+// Serve static files
+app.use("/cdn", express.static(path.join(__dirname, "cdn")));
+app.use("/editor/:repo", express.static(path.join(__dirname, "static")));
 
+/* ================================
+   🔹 WebSocket Interactive Terminal
+   ================================= */
+wss.on("connection", async (ws, req) => {
+  const queryParams = new URLSearchParams(req.url.split("?")[1]);
+  const repoName = queryParams.get("repo");
 
-wss.on("connection", (ws) => {
-  const shell = pty.spawn("bash", [], {
+  console.log(`🔍 New WebSocket connection: ${req.url}`);
+  console.log(`📌 Extracted repo name: ${repoName}`);
+
+  if (!repoName) {
+    console.error(`❌ ERROR: No repository name provided.`);
+    ws.send("Error: No repository specified.");
+    ws.close();
+    return;
+  }
+
+  const repoPath = path.join(BASE_DIR, repoName);
+
+  if (!fs.existsSync(repoPath)) {
+    console.log(`🛠️ Cloning files for repo: ${repoName}`);
+    try {
+      await setupRepoFiles(repoName, repoPath);
+      console.log(`✅ Files for ${repoName} downloaded successfully.`);
+    } catch (error) {
+      console.error(`❌ Failed to fetch repo files: ${error.message}`);
+      ws.send(`Error: Failed to fetch repo ${repoName}`);
+      ws.close();
+      return;
+    }
+  } else {
+    console.log(`✅ Repo files already exist: ${repoPath}`);
+  }
+
+  console.log(`🖥️ Starting terminal inside: ${repoPath}`);
+
+  const shell = pty.spawn("bash", ["-c", `cd "${repoPath}" && exec bash --login`], {
     name: "xterm-color",
     cols: 80,
     rows: 24,
-    cwd: process.env.HOME,
-    env: process.env,
+    cwd: repoPath,
+    env: {
+      ...process.env,
+      PWD: repoPath,
+      HOME: repoPath,
+    },
   });
 
-  shell.on("data", (data) => {
-    ws.send(data.toString());
-  });
-
-  ws.on("message", (msg) => {
-    shell.write(msg);
-  });
+  shell.on("data", (data) => ws.send(data.toString()));
+  ws.on("message", (msg) => shell.write(msg));
+  ws.on("close", () => console.log(`❌ Terminal session closed for: ${repoName}`));
 });
+
+/* ================================
+   🔹 Fetch Repo Files & Save Locally
+   ================================= */
+   async function setupRepoFiles(repoDir) {
+    try {
+        const repoPath = path.join("/app/code", repoDir);
+
+        // Ensure the repo directory exists
+        fs.mkdirSync(repoPath, { recursive: true });
+
+        // Fetch the list of files
+        const filesResponse = await axios.get(`http://git-server-container1:8000/files/${repoDir}`);
+
+        if (!filesResponse.data || !Array.isArray(filesResponse.data.files)) {
+            console.error("❌ Invalid response for file list:", filesResponse.data);
+            return;
+        }
+
+        const files = filesResponse.data.files;
+
+        console.log(`📂 Found ${files.length} files for ${repoDir}. Downloading...`);
+
+        for (const file of files) {
+            try {
+                // Encode filename in Base64
+                const encodedFile = Buffer.from(file).toString("base64");
+
+                // Fetch file content
+                const fileResponse = await axios.get(`http://git-server-container1:8000/content/main/${repoDir}/${encodedFile}`);
+
+                // Ensure response contains the expected data
+                if (!fileResponse.data || typeof fileResponse.data.value !== "string") {
+                    console.error(`❌ Invalid response for file: ${file}`);
+                    continue;
+                }
+
+                const filePath = path.join(repoPath, file);
+
+                // Ensure the directory exists before writing the file
+                fs.mkdirSync(path.dirname(filePath), { recursive: true });
+
+                // Write the file
+                fs.writeFileSync(filePath, fileResponse.data.value);
+                console.log(`✅ Downloaded: ${file}`);
+            } catch (fileError) {
+                console.error(`❌ Failed to download file: ${file}`, fileError.message);
+            }
+        }
+
+        console.log(`✅ Files for ${repoDir} downloaded successfully.`);
+    } catch (error) {
+        console.error(`❌ Failed to fetch repo files:`, error.message);
+    }
+}
+  
+  
+
+app.use(cors());
+app.use(express.json());
 
 const port = process.env.PORT || 3000;
-
-app.use("/editor/:repo", express.static("static"));
-app.use("/cdn", express.static("cdn"));
-server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+server.listen(port, () => console.log(`🚀 Server running on port ${port}`));

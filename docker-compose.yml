@@ -3,7 +3,7 @@ services:
     build:
       context: ./git
       dockerfile: Dockerfile
-    container_name: git-server-container
+    container_name: git-server-container1
     ports:
       - "8000:8000" # Change the port accordingly
     networks:
@@ -13,7 +13,7 @@ services:
     build:
       context: ./editor
       dockerfile: Dockerfile
-    container_name: code-editor-container
+    container_name: code-editor-container1
     ports:
       - "3000:3000" # Change the port accordingly
     networks:
