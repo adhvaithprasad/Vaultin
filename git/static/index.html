@@ -9,7 +9,7 @@
     <!-- <link rel="stylesheet" type="text/css" href="dist/calendar-heatmap.min.css"> -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            fetch("http://localhost:8000/list-repos")
+            fetch("/git/list-repos")
                 .then(response => response.json())
                 .then(data => {
                     const repoList = document.getElementById("public-repo-list");
@@ -17,7 +17,7 @@
                     data.repos.forEach(repo => {
                         const li = document.createElement("li");
                         li.innerHTML = `
-                            <span class="file" onclick="window.location.href='http://localhost:3000/editor/${repo}'">
+                            <span class="file" onclick="window.location.href='/code/editor/${repo}'">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="16 18 22 12 16 6"/>
                                     <polyline points="8 6 2 12 8 18"/>
@@ -198,7 +198,7 @@
                 redirect: "follow"
                 };
 
-                fetch("http://localhost:8000/clone", requestOptions)
+                fetch("/git/clone", requestOptions)
                 .then((response) => response.text())
                 .then((result) => alert("success"))
                 .catch((error) => alert(error));
@@ -230,7 +230,7 @@
                 redirect: "follow"
                 };
 
-                fetch("http://localhost:8000/clone", requestOptions)
+                fetch("/git/clone", requestOptions)
                 .then((response) => response.text())
                 .then((result) => alert("success"))
                 .catch((error) => alert(error));

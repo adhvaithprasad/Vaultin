@@ -3,7 +3,7 @@ let filen;
 let fileName, files = [];
 let current_file = null;
 let m1, m2, m3, m4;
-const repoName = window.location.href.split("/")[4];
+const repoName = window.location.href.split("/")[5];
 console.log("here:",repoName);
 function updatePosition() {
 
@@ -151,7 +151,7 @@ async function render(i) {
     'dir':repoName
   }
  
-  const url = 'http://localhost:8000/add';
+  const url = 'http://localhost/git/add';
   const options = {
     method: 'POST',
     headers: {'content-type': 'application/json'},
@@ -171,7 +171,7 @@ function getRepoFiles(){
     const fileTree = document.getElementById("root");
 
       // Fetch data from the API
-      fetch("http://localhost:8000/files/"+repoName)
+      fetch("http://localhost/git/files/"+repoName)
         .then((response) => response.json())
         .then((jsonData) => {
           createFileTree(fileTree, jsonData.files);
@@ -253,7 +253,7 @@ try {
     //   console.log("custom")
     // } else {
 
-      fetch("http://localhost:8000/content/master/"+repoName+"/"+btoa(file), {
+      fetch("http://localhost/git/content/master/"+repoName+"/"+btoa(file), {
         method: "GET"
       })
         .then(response => response.json())
@@ -397,7 +397,7 @@ async function commit(){
     'message':document.getElementById('commit_message').value,
   }
 
-  const url = 'http://localhost:8000/commit';
+  const url = 'http://localhost/git/commit';
   const options = {
     method: 'POST',
     headers: {'content-type': 'application/json'},
@@ -416,7 +416,7 @@ async function commit(){
   }
 }
 async function commits(){
-  const url = 'http://localhost:8000/commits/'+repoName;
+  const url = 'http://localhost/git/commits/'+repoName;
   const options = {method: 'GET'};
   var container = document.getElementById("git_files_cont");
   container.innerHTML = '';
@@ -447,7 +447,7 @@ async function commits(){
 }
 commits()
 async function branches(){
-  const url = 'http://localhost:8000/branch/'+repoName;
+  const url = 'http://localhost/git/branch/'+repoName;
   const options = {method: 'GET'};
   var container = document.getElementById("branches");
   container.innerHTML = '';

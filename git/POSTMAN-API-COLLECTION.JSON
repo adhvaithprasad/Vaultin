@@ -21,7 +21,7 @@
 					"raw": "{\n  \"url\": \"{{git-repo-url}}\",\n  \"dir\": \"{{git-repo-directory}}\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8000/clone",
+					"raw": "/git/clone",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -40,7 +40,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/list-repos",
+					"raw": "/git/list-repos",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -59,7 +59,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/files/{{git-repo-directory}}",
+					"raw": "/git/files/{{git-repo-directory}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -79,7 +79,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/branch/{{git-repo-directory}}",
+					"raw": "/git/branch/{{git-repo-directory}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -99,7 +99,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/commits/{{git-repo-directory}}",
+					"raw": "/git/commits/{{git-repo-directory}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -128,7 +128,7 @@
 					"raw": "{\n  \"file\": \"test.txt\",\n  \"dir\": \"{{git-repo-directory}}\",\n  \"content\": \"Hello Git!\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8000/add",
+					"raw": "/git/add",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -156,7 +156,7 @@
 					"raw": "{\n  \"message\": \"Initial commit\",\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"dir\": \"{{git-repo-directory}}\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8000/commit",
+					"raw": "/git/commit",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -175,7 +175,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/content/main/{{git-repo-directory}}/dGVzdC50eHQ=",
+					"raw": "/git/content/main/{{git-repo-directory}}/dGVzdC50eHQ=",
 					"protocol": "http",
 					"host": [
 						"localhost"

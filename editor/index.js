@@ -21,13 +21,17 @@ if (!fs.existsSync(BASE_DIR)) {
 
 // Serve static files
 app.use("/cdn", express.static(path.join(__dirname, "cdn")));
-app.use("/editor/:repo", express.static(path.join(__dirname, "static")));
+app.use("/editor", express.static(path.join(__dirname, "static")));
+app.get("/editor/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "static", "index.html"));
+});
+
 
 /* ================================
    🔹 WebSocket Interactive Terminal
    ================================= */
 wss.on("connection", async (ws, req) => {
-  const queryParams = new URLSearchParams(req.url.split("?")[1]);
+  const queryParams = new URLSearchParams(req.url.replace(/^\/ws\?/, ""));
   const repoName = queryParams.get("repo");
 
   console.log(`🔍 New WebSocket connection: ${req.url}`);

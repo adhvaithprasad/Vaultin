@@ -2,7 +2,8 @@ const terminal = new Terminal();
 const fitAddon = new FitAddon.FitAddon();
 terminal.loadAddon(fitAddon);
  // Change this dynamically if needed
-const socket = new WebSocket(`ws://localhost:3000/?repo=${repoName}`);
+const socket = new WebSocket(`ws://${window.location.host}/code/ws?repo=${repoName}`);
+
 
 terminal.open(document.getElementById("terminal"));
 fitAddon.fit();
