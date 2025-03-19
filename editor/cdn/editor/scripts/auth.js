@@ -34,18 +34,18 @@ console.log("init happened");
 
       if (user !== null) {
           user.providerData.forEach(providerData => {
-              document.getElementById("user-image-editor").src = providerData.photoURL;
+              document.getElementById("user-image-editor").src ="https://api.dicebear.com/9.x/dylan/svg?seed="+uid;
           });
       }
   } else {
-      
-    firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
-    .then((result) => {
-        console.log("User signed in:", result.user);
-    })
-    .catch((error) => {
-        console.error("Sign-in error:", error);
-    });
+      window.location.href = "http://localhost/auth?redirect=" + btoa(url);
+    // firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    // .then((result) => {
+    //     console.log("User signed in:", result.user);
+    // })
+    // .catch((error) => {
+    //     console.error("Sign-in error:", error);
+    // });
     
   }
 });
