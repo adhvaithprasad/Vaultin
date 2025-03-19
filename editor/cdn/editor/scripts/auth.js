@@ -3,14 +3,13 @@
  * Configures the Firebase SDK with the provided credentials.
  */
 var config = {
-  apiKey: "AIzaSyC-3XDB0vSiQlbGL-Sa9rOiteFYitYfstw",
-  authDomain: "firescrypt-web.firebaseapp.com",
-  databaseURL: "https://firescrypt-web-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "firescrypt-web",
-  storageBucket: "firescrypt-web.appspot.com",
-  messagingSenderId: "276701233302",
-  appId: "1:276701233302:web:5e513b1d8c681e830082b7",
-  measurementId: "G-T12DZ6GPNN"
+  apiKey: "AIzaSyAF-IdZDqP_R2TwdOmUqB9iNjYJpSJMGpE",
+  authDomain: "vaultin-code.firebaseapp.com",
+  projectId: "vaultin-code",
+  storageBucket: "vaultin-code.firebasestorage.app",
+  messagingSenderId: "994300410425",
+  appId: "1:994300410425:web:8ad4600314558f3c84abe8",
+  measurementId: "G-20JN452H3S"
 };
 firebase.initializeApp(config);
 var db = firebase.database();
@@ -34,11 +33,11 @@ console.log("init happened");
 
       if (user !== null) {
           user.providerData.forEach(providerData => {
-              document.getElementById("user-image-editor").src ="https://api.dicebear.com/9.x/dylan/svg?seed="+uid;
+              document.getElementById("user-image-editor").src = providerData.photoURL;
           });
       }
   } else {
-      window.location.href = "http://localhost/auth?redirect=" + btoa(url);
+      window.location.href = "http://localhost/login?redirect=" + btoa(url);
     // firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
     // .then((result) => {
     //     console.log("User signed in:", result.user);

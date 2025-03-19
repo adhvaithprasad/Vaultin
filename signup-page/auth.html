@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { updateProfile,getAuth, createUserWithEmailAndPassword, signInWithPopup, signInWithEmailAndPassword, GoogleAuthProvider, GithubAuthProvider, FacebookAuthProvider } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    
+        const firebaseConfig ={
+    apiKey: "AIzaSyAF-IdZDqP_R2TwdOmUqB9iNjYJpSJMGpE",
+    authDomain: "vaultin-code.firebaseapp.com",
+    projectId: "vaultin-code",
+    storageBucket: "vaultin-code.firebasestorage.app",
+    messagingSenderId: "994300410425",
+    appId: "1:994300410425:web:8ad4600314558f3c84abe8",
+    measurementId: "G-20JN452H3S"
+  };
+    
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+    
+        window.googleLogin = function() {
+            const provider = new GoogleAuthProvider();
+            signInWithPopup(auth, provider)
+                .then(() => afterlogin())
+                .catch(err => console.error(err.message));
+        }
+    
+        window.githubLogin = function() {
+            const provider = new GithubAuthProvider();
+            signInWithPopup(auth, provider)
+                .then(() => afterlogin())
+                .catch(err => console.error(err.message));
+        }
+    
+        window.facebookLogin = function() {
+            const provider = new FacebookAuthProvider();
+            signInWithPopup(auth, provider)
+                .then(() => afterlogin())
+                .catch(err => console.error(err.message));
+        }
+    
+        window.createAccount = function() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const displayName = document.getElementById("displayName").value;
+        const photoURL = "https://api.dicebear.com/9.x/avataaars-neutral/svg?seed="+displayName;
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then(userCredential => {
+                return updateProfile(userCredential.user, {
+                    displayName: displayName,
+                    photoURL: photoURL
+                }).then(() => afterlogin());
+            })
+            .catch(err => console.error("Signup failed:", err.message));
+    }
+    
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+    
+        function afterlogin() {
+            const encodedRedirect = getQueryParam("redirect");
+    
+            if (encodedRedirect) {
+                try {
+                    const decodedUrl = atob(encodedRedirect);
+                    if (decodedUrl.startsWith("http") || decodedUrl.startsWith("/")) {
+                        window.location.href = decodedUrl;
+                    } else {
+                        console.error("Invalid redirect URL:", decodedUrl);
+                    }
+                } catch (e) {
+                    console.error("Error decoding Base64:", e);
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* General Styles */
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #0b101c;
+            color: white;
+            margin: 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 400px;
+            padding: 30px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #b0b0b0;
+            margin-bottom: 50px;
+        }
+
+        /* Button Styles */
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 500;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        button .icon {
+            font-size: 18px;
+        }
+
+        button.email:hover {
+            background: #baf790;
+}
+
+
+button.email {
+    width: 100%;
+   font-size: 14px;
+    background: #91e25f;
+    color: black;
+    font-weight: bold;
+}
+        .auth-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .auth-buttons button {
+            width: 200px;
+            font-weight: 600;
+            font-size: 12px;
+            color: grey;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .small-text {
+            font-size: 12px;
+            color: #b0b0b0;
+            margin-top: 50px;
+        }
+
+        .small-text a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .small-text a:hover {
+            text-decoration: underline;
+        }
+        /* Input Field Styles */
+.input-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.input-group label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #b0b0b0;
+}
+
+.input-group input {
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    margin: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    background: #0f1625;
+    color: white;
+    outline: none;
+    transition: 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: rgba(255, 255, 255, 0.769);
+}
+/* Container to align the switch and text */
+.switch-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+/* Hide the default checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The toggle switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 18px;
+}
+
+/* The track (background) */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 34px;
+}
+
+/* The handle (circle) */
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+/* When checked, move the handle and change the background color */
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:checked + .slider::before {
+  transform: translateX(16px);
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Vaultin Authentication</h1>
+        <p>Create an account to continue</p>
+        <form class="input-group">
+            <input type="text" placeholder="Username" id="displayName"/>
+            <input type="email" placeholder="Email" id="email"/>
+            <input type="password" placeholder="Password" id="password"/>
+            <label class="switch-container">
+                <label class="switch">
+                  <input type="checkbox" id="togglePassword" onclick="showpassword()">
+                  <span class="slider"></span>
+                </label>
+                <span class="label-text" style="font-size: 13px;">Show Password</span>
+              </label>
+        </form>
+        <button class="email" onclick="createAccount()">
+            <svg data-testid="geist-icon" height="16" stroke-linejoin="round" viewBox="0 0 16 16" width="16" style="color: currentcolor;"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2642 3.5H2.73578L8 8.01219L13.2642 3.5ZM1.5 4.41638V11.5C1.5 12.0523 1.94772 12.5 2.5 12.5H13.5C14.0523 12.5 14.5 12.0523 14.5 11.5V4.41638L8.48809 9.56944L8 9.98781L7.51191 9.56944L1.5 4.41638ZM0 2H1.5H14.5H16V3.5V11.5C16 12.8807 14.8807 14 13.5 14H2.5C1.11929 14 0 12.8807 0 11.5V3.5V2Z" fill="currentColor"></path></svg>
+             Sign in with Email
+        </button>
+        
+        <div class="auth-buttons">
+            <button class="github" onclick="githubLogin()">
+                <svg data-testid="geist-icon" height="16" stroke-linejoin="round" viewBox="0 0 16 16" width="16" style="color: currentcolor;"><g clip-path="url(#clip0_872_3147)">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58 0 0 3.57879 0 7.99729C0 11.5361 2.29 14.5251 5.47 15.5847C5.87 15.6547 6.02 15.4148 6.02 15.2049C6.02 15.0149 6.01 14.3851 6.01 13.7154C4 14.0852 3.48 13.2255 3.32 12.7757C3.23 12.5458 2.84 11.836 2.5 11.6461C2.22 11.4961 1.82 11.1262 2.49 11.1162C3.12 11.1062 3.57 11.696 3.72 11.936C4.44 13.1455 5.59 12.8057 6.05 12.5957C6.12 12.0759 6.33 11.726 6.56 11.5261C4.78 11.3262 2.92 10.6364 2.92 7.57743C2.92 6.70773 3.23 5.98797 3.74 5.42816C3.66 5.22823 3.38 4.40851 3.82 3.30888C3.82 3.30888 4.49 3.09895 6.02 4.1286C6.66 3.94866 7.34 3.85869 8.02 3.85869C8.7 3.85869 9.38 3.94866 10.02 4.1286C11.55 3.08895 12.22 3.30888 12.22 3.30888C12.66 4.40851 12.38 5.22823 12.3 5.42816C12.81 5.98797 13.12 6.69773 13.12 7.57743C13.12 10.6464 11.25 11.3262 9.47 11.5261C9.76 11.776 10.01 12.2558 10.01 13.0056C10.01 14.0752 10 14.9349 10 15.2049C10 15.4148 10.15 15.6647 10.55 15.5847C12.1381 15.0488 13.5182 14.0284 14.4958 12.6673C15.4735 11.3062 15.9996 9.67293 16 7.99729C16 3.57879 12.42 0 8 0Z" fill="currentColor"></path>
+                    </g>
+                    <defs>
+                    <clipPath id="clip0_872_3147">
+                    <rect width="16" height="16" fill="white"></rect>
+                    </clipPath>
+                    </defs></svg>
+                  GitHub
+            </button>
+            <button class="google" onclick="googleLogin()">
+                <svg data-testid="geist-icon" height="16" stroke-linejoin="round" viewBox="0 0 16 16" width="16" style="color: currentcolor;"><path d="M8.15991 6.54543V9.64362H12.4654C12.2763 10.64 11.709 11.4837 10.8581 12.0509L13.4544 14.0655C14.9671 12.6692 15.8399 10.6182 15.8399 8.18188C15.8399 7.61461 15.789 7.06911 15.6944 6.54552L8.15991 6.54543Z" fill="#4285F4"></path>
+                    <path d="M3.6764 9.52268L3.09083 9.97093L1.01807 11.5855C2.33443 14.1963 5.03241 16 8.15966 16C10.3196 16 12.1305 15.2873 13.4542 14.0655L10.8578 12.0509C10.1451 12.5309 9.23598 12.8219 8.15966 12.8219C6.07967 12.8219 4.31245 11.4182 3.67967 9.5273L3.6764 9.52268Z" fill="#34A853"></path>
+                    <path d="M1.01803 4.41455C0.472607 5.49087 0.159912 6.70543 0.159912 7.99995C0.159912 9.29447 0.472607 10.509 1.01803 11.5854C1.01803 11.5926 3.6799 9.51991 3.6799 9.51991C3.5199 9.03991 3.42532 8.53085 3.42532 7.99987C3.42532 7.46889 3.5199 6.95983 3.6799 6.47983L1.01803 4.41455Z" fill="#FBBC05"></path>
+                    <path d="M8.15982 3.18545C9.33802 3.18545 10.3853 3.59271 11.2216 4.37818L13.5125 2.0873C12.1234 0.792777 10.3199 0 8.15982 0C5.03257 0 2.33443 1.79636 1.01807 4.41455L3.67985 6.48001C4.31254 4.58908 6.07983 3.18545 8.15982 3.18545Z" fill="#EA4335"></path></svg>
+                Google
+            </button>
+
+            <button class="microsoft" onclick="facebookLogin()">
+                <svg data-testid="geist-icon" height="16" stroke-linejoin="round" viewBox="0 0 16 16" width="16" style="color: currentcolor;"><path d="M1.72819 9.68842C1.72819 10.2994 1.86229 10.7684 2.03756 11.0522C2.26735 11.4239 2.6101 11.5813 2.95952 11.5813C3.41021 11.5813 3.82251 11.4695 4.61705 10.3706C5.25358 9.48978 6.00361 8.25345 6.50827 7.47837L7.36291 6.16526C7.95659 5.25331 8.64376 4.23954 9.43163 3.55238C10.0748 2.99152 10.7687 2.67993 11.467 2.67993C12.6393 2.67993 13.756 3.3593 14.6107 4.63347C15.546 6.02894 16 7.78663 16 9.60051C16 10.6788 15.7875 11.4711 15.4258 12.0971C15.0764 12.7025 14.3953 13.3073 13.2497 13.3073V11.5813C14.2306 11.5813 14.4754 10.6799 14.4754 9.64836C14.4754 8.17833 14.1327 6.54695 13.3777 5.38128C12.8418 4.55446 12.1474 4.04924 11.3835 4.04924C10.5572 4.04924 9.89233 4.67242 9.14508 5.78356C8.74781 6.37391 8.33996 7.09334 7.88204 7.90514L7.37794 8.79817C6.36528 10.5937 6.10878 11.0026 5.60245 11.6776C4.71498 12.8594 3.95716 13.3073 2.95952 13.3073C1.77604 13.3073 1.02768 12.7948 0.564192 12.0225C0.185838 11.3933 0 10.5675 0 9.62666L1.72819 9.68842Z" fill="#0081FB"></path>
+                    <path d="M1.31885 4.7685C2.11117 3.54719 3.25458 2.69312 4.56603 2.69312C5.32552 2.69312 6.08057 2.9179 6.86899 3.56167C7.73142 4.26552 8.65061 5.42452 9.79736 7.33466L10.2085 8.02015C11.2012 9.67379 11.7659 10.5245 12.0964 10.9257C12.5215 11.4409 12.8192 11.5945 13.2059 11.5945C14.1868 11.5945 14.4317 10.6931 14.4317 9.66154L15.9562 9.6137C15.9562 10.692 15.7437 11.4843 15.382 12.1103C15.0326 12.7157 14.3515 13.3205 13.2059 13.3205C12.4937 13.3205 11.8627 13.1658 11.165 12.5076C10.6286 12.0023 10.0016 11.1049 9.51915 10.2981L8.08418 7.90107C7.3642 6.69812 6.70374 5.80119 6.32149 5.39502C5.91031 4.95824 5.38172 4.43077 4.53821 4.43077C3.8555 4.43077 3.27573 4.90984 2.79054 5.64262L1.31885 4.7685Z" fill="url(#paint0_linear_237_30297)"></path>
+                    <path d="M4.582 4.41758C3.89929 4.41758 3.31952 4.89665 2.83433 5.62944C2.14828 6.66491 1.72819 8.20727 1.72819 9.68842C1.72819 10.2994 1.86229 10.7684 2.03756 11.0522L0.564192 12.0225C0.185838 11.3933 0 10.5675 0 9.62666C0 7.91571 0.469604 6.13242 1.36264 4.75532C2.15496 3.53401 3.29837 2.67993 4.60982 2.67993L4.582 4.41758Z" fill="url(#paint1_linear_237_30297)"></path>
+                    <defs>
+                    <linearGradient id="paint0_linear_237_30297" x1="3.35028" y1="9.20306" x2="14.3671" y2="9.75947" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#0064E1"></stop>
+                    <stop offset="0.4" stop-color="#0064E1"></stop>
+                    <stop offset="0.83" stop-color="#0073EE"></stop>
+                    <stop offset="1" stop-color="#0082FB"></stop>
+                    </linearGradient>
+                    <linearGradient id="paint1_linear_237_30297" x1="2.50382" y1="10.414" x2="2.50382" y2="6.35221" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#0082FB"></stop>
+                    <stop offset="1" stop-color="#0064E0"></stop>
+                    </linearGradient>
+                    </defs></svg>
+                      Meta
+            </button>
+        </div>
+
+        <p class="small-text">By continuing, you agree to our <a href="#">Terms of Service</a> & <a href="#">Privacy Policy</a></p>
+    </div>
+
+   <script>
+    function showpassword() {
+  var x = document.getElementById("password");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+   </script>
+</body>
+</html>

@@ -22,7 +22,8 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./auth-page:/auth-page:ro  # Mounts your auth page
+      - ./login-page:/login-page:ro  # Mounts your auth page
+      - ./signup-page:/signup-page:ro  # Mounts your auth page
     depends_on:
       - git-server
       - code-editor
