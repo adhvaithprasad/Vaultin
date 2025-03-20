@@ -46,21 +46,29 @@ wss.on("connection", async (ws, req) => {
   }
 
   const repoPath = path.join(BASE_DIR, repoName);
-
-  if (!fs.existsSync(repoPath)) {
-    console.log(`🛠️ Cloning files for repo: ${repoName}`);
-    try {
-      await setupRepoFiles(repoName, repoPath);
-      console.log(`✅ Files for ${repoName} downloaded successfully.`);
-    } catch (error) {
-      console.error(`❌ Failed to fetch repo files: ${error.message}`);
+  try{
+    await setupRepoFiles(repoName, repoPath);
+    console.log(`✅ Files for ${repoName} downloaded successfully.`);
+  }catch(error){
+    console.error(`❌ Failed to fetch repo files: ${error.message}`);
       ws.send(`Error: Failed to fetch repo ${repoName}`);
       ws.close();
       return;
-    }
-  } else {
-    console.log(`✅ Repo files already exist: ${repoPath}`);
   }
+  // if (!fs.existsSync(repoPath)) {
+  //   console.log(`🛠️ Cloning files for repo: ${repoName}`);
+  //   try {
+  //     await setupRepoFiles(repoName, repoPath);
+  //     console.log(`✅ Files for ${repoName} downloaded successfully.`);
+  //   } catch (error) {
+  //     console.error(`❌ Failed to fetch repo files: ${error.message}`);
+  //     ws.send(`Error: Failed to fetch repo ${repoName}`);
+  //     ws.close();
+  //     return;
+  //   }
+  // } else {
+  //   console.log(`✅ Repo files already exist: ${repoPath}`);
+  // }
 
   console.log(`🖥️ Starting terminal inside: ${repoPath}`);
 

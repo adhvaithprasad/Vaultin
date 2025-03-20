@@ -8,7 +8,7 @@ const { exec } = require("child_process");
 const { Git: Server } = require("node-git-server");
 const app = express();
 const server = http.createServer(app);
-
+const fsp = require("fs").promises;
 
 
 const corsOptions = {
@@ -132,15 +132,27 @@ app.post("/add", async (req, res) => {
   }
 
   const filePath = path.join(process.cwd(), "assets", dir, file);
-  fs.writeFileSync(filePath, content, "utf-8");
+  try {
+    // Ensure the directory exists
+    await fsp.mkdir(path.dirname(filePath), { recursive: true });
 
-  exec(`git -C ${path.join(process.cwd(), "assets", dir)} add ${file}`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error adding file: ${stderr}`);
-      return res.status(500).json({ error: "Error adding file" });
-    }
-    res.json({ message: `File ${file} added` });
-  });
+    // Write the file
+    await fsp.writeFile(filePath, content+"\n", 'utf8');
+    exec(`git -C ${path.join(process.cwd(), "assets", dir)} add ${file}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error adding file: ${stderr}`);
+        return res.status(500).json({ error: "Error adding file in git" });
+      }
+      res.json({ message: `File ${file} added` });
+    });
+    console.log(`File written successfully: ${filePath}`);
+} catch (error) {
+    res.status(500).json({ error: `Failed to write file: ${error.message}` });
+}
+
+
+
+ 
 });
 
 // Commit changes
