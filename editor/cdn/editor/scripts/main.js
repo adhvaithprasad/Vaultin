@@ -149,22 +149,35 @@ async function render(i) {
     'file': i,
     'content': editorValue,
     'dir':repoName
-  }
+  };
+  const terminalData={
+     'content':editorValue+"\n"
+  };
  
   const url = 'http://localhost/git/add';
+  const terminalUrl = 'http://localhost/code/content/'+repoName+'/'+btoa(i);
   const options = {
     method: 'POST',
     headers: {'content-type': 'application/json'},
     body: JSON.stringify(data)
   };
+  const TerminalOptions = {
+    method: 'POST',
+    headers: {'content-type': 'application/json'},
+    body: JSON.stringify(terminalData)
+  };
 
   try {
     const response = await fetch(url, options);
+    const responseTerminal = await fetch(terminalUrl, TerminalOptions);
     const data = await response.json();
-   
+    const dataTerminal = await responseTerminal.json();
   } catch (error) {
     console.error(error);
   }
+
+
+  
 }
 
 function getRepoFiles(){
@@ -180,6 +193,7 @@ function getRepoFiles(){
 
 
 }
+
 function createFileTree(parent, files) {
   files.forEach((file) => {
     const parts = file.split("/");
@@ -246,28 +260,12 @@ try {
 
   let currentUser = firebase.auth().currentUser;
   let databaseRef = firebase.database().ref();
- databaseRef.child(currentUser.uid).child(repoName ).child(btoa(e)).get().then(snapshot => {
-   // uncomment to include cloud write
-    // if (snapshot.exists()) {
-    //   setval(e, snapshot.val().value,"custom");
-    //   console.log("custom")
-    // } else {
-
-      fetch("http://localhost/git/content/master/"+repoName+"/"+btoa(file), {
-        method: "GET"
-      })
-        .then(response => response.json())
-        .then(data => setval(e, data.value,"github"))
-        .catch(error => setval(e, ""));
-
-     
-
-
-
-    // }
-  }).catch(error => {
-    console.error(error);
-  });
+  fetch("http://localhost/git/content/master/"+repoName+"/"+btoa(file), {
+    method: "GET"
+  })
+    .then(response => response.json())
+    .then(data => setval(e, data.value,"github"))
+    .catch(error => setval(e, ""));
 
 
 

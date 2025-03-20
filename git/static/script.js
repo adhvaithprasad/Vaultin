@@ -245,12 +245,15 @@ svg.selectAll(".day-label")
 function settingVisible(){
     var x = document.getElementById("setting-background");
     var y = document.getElementById("projects-bg");
+    var z = document.getElementById("settings-icon");
     if (x.style.display === "none") {
         x.style.display = "flex";
         y.style.display = "none";
+        z.style.background="#80808061";
     } else {
         x.style.display = "none";
         y.style.display = "block";
+        z.style.background="none";
     }
 }
 function logout(){

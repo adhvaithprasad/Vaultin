@@ -9,7 +9,8 @@ var config = {
   storageBucket: "vaultin-code.firebasestorage.app",
   messagingSenderId: "994300410425",
   appId: "1:994300410425:web:8ad4600314558f3c84abe8",
-  measurementId: "G-20JN452H3S"
+  measurementId: "G-20JN452H3S",
+  databaseURL: "https://vaultin-code-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
 firebase.initializeApp(config);
 var db = firebase.database();

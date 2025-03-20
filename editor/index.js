@@ -11,7 +11,8 @@ const axios = require("axios");
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
-
+app.use(cors());
+app.use(express.json());
 const BASE_DIR = path.resolve("/app/code"); // 🔥 Always start inside `/code`
 
 if (!fs.existsSync(BASE_DIR)) {
@@ -135,10 +136,75 @@ wss.on("connection", async (ws, req) => {
     }
 }
   
-  
+app.get("/content/:repoDir/:file", async (req, res) => {
+  try {
+      
+      const repoDir = req.params.repoDir;
+      const dirPath = path.join("/app/code", repoDir);
+      const file  = atob(req.params.file);
+      const filePath = path.join(dirPath, file);
+      const fileContent = fs.readFileSync(filePath, "utf-8");
+      res.send({ value: fileContent });
+  } catch (err) {
+      console.error(err);
+      res.status(400).send("Invalid Request");
+  }
+});
 
-app.use(cors());
-app.use(express.json());
+app.post("/content/:repoDir/:file", async (req, res) => {
+  try {
+      const repoDir = req.params.repoDir;
+      const dirPath = path.join("/app/code", repoDir);
+
+      console.log("repoDir:", repoDir);
+      console.log("Raw file param:", req.params.file);
+
+      // Decode Base64 file name
+      let file;
+      try {
+          file = Buffer.from(req.params.file, 'base64').toString('utf8');
+      } catch (decodeErr) {
+          console.error("Base64 decoding failed:", decodeErr);
+          return res.status(400).send("Invalid file encoding");
+      }
+
+      console.log("Decoded file name:", file);
+      const filePath = path.join(dirPath, file);
+      console.log("Final file path:", filePath);
+
+      // ✅ FIX: Use fs.mkdir with a callback
+      fs.mkdir(dirPath, { recursive: true }, (err) => {
+          if (err) {
+              console.error("Directory creation failed:", err);
+              return res.status(500).send("Failed to create directory");
+          }
+
+          // Check if request body has valid content
+          if (!req.body || typeof req.body.content !== 'string') {
+              console.error("Invalid request body:", req.body);
+              return res.status(400).send("Invalid request body");
+          }
+
+          // Write content to file
+          fs.writeFile(filePath, req.body.content, 'utf8', (writeErr) => {
+              if (writeErr) {
+                  console.error("File writing failed:", writeErr);
+                  return res.status(500).send("Failed to write file");
+              }
+
+              console.log('File written successfully');
+              res.status(200).send("File written successfully");
+          });
+      });
+
+  } catch (err) {
+      console.error("Unhandled error:", err);
+      res.status(400).send("Invalid Request");
+  }
+});
+
+
+
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => console.log(`🚀 Server running on port ${port}`));
